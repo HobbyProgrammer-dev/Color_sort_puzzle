@@ -25,3 +25,4 @@ I have used AI to review the code before publishing. But the code is written ent
 Adressing the elephant in the room, it is not conpatible for windows(afaik). You have to edit the file paths for it to work and the build script doesn't work. I may later use the cross platform version.
 I am new to actually making something for others and is my first complete project on github. If you find the code more verbose, feel free to help me make the code more readable and idiomatic.
 P.S. I don't know if there needs to be anything else in the README.md.
+I am using a phone to do the programming. So I cannot build general binaries.

@@ -2,24 +2,24 @@
 
 #[derive(Clone, PartialEq, Eq)]
 pub struct Game {
-    bottles: Vec<Bottle>
+    bottles: Vec<Bottle>,
 }
 
 #[derive(Clone, Hash, PartialEq, Eq)]
 struct Bottle {
     bott: Vec<u8>,
-    height: u16
+    height: u16,
 }
 
 #[derive(Clone, Copy)]
 pub struct Move {
     start: usize,
-    end: usize
+    end: usize,
 }
 
 #[derive(Debug, Hash, PartialEq, Eq)]
 pub struct GameState {
-    botts: Vec<u64>
+    botts: Vec<u64>,
 }
 
 impl Game {
@@ -31,13 +31,23 @@ impl Game {
         Self { bottles: v }
     }
     pub fn is_move_valid(&self, mv: &Move) -> bool {
-        if mv.start == mv.end { return false; } 
+        if mv.start == mv.end {
+            return false;
+        }
         let st = self.bottles[mv.start].peek();
         let nd = self.bottles[mv.end].peek();
-        if let None = st { return false; }
-        if let None = nd { return true; }
-        if self.bottles[mv.end].is_full() { return false; }
-        if self.bottles[mv.start].is_all_same() && self.bottles[mv.end].is_empty() { return  false; }
+        if st.is_none() {
+            return false;
+        }
+        if nd.is_none() {
+            return true;
+        }
+        if self.bottles[mv.end].is_full() {
+            return false;
+        }
+        if self.bottles[mv.start].is_all_same() && self.bottles[mv.end].is_empty() {
+            return false;
+        }
         st.unwrap() == nd.unwrap()
     }
     pub fn make_move(&mut self, mv: &Move) -> Result<(), InvalidMoveError> {
@@ -80,16 +90,13 @@ impl Bottle {
         for x in b {
             v.push(x);
         }
-        Self { bott: v, height: height }
+        Self { bott: v, height }
     }
     fn is_full(&self) -> bool {
         self.bott.len() == self.height.into()
     }
     fn peek(&self) -> Option<u8> {
-        match self.bott.last() {
-            Some(&k) => Some(k),
-            None => None
-        }
+        self.bott.last().copied()
     }
     fn push(&mut self, val: u8) {
         self.bott.push(val);
@@ -100,8 +107,8 @@ impl Bottle {
     fn as_prim(&self) -> u64 {
         let mut val: u64 = 0;
         for x in &self.bott {
-            val = val << 8;
-            val = val | *x as u64;
+            val <<= 8;
+            val |= *x as u64;
         }
         val
     }
@@ -109,11 +116,11 @@ impl Bottle {
         self.bott.is_empty()
     }
     fn is_all_same(&self) -> bool {
-        if ! self.is_full() {
+        if !self.is_full() {
             return false;
         }
         for x in &self.bott {
-            if *x != self.bott[0]{
+            if *x != self.bott[0] {
                 return false;
             }
         }
@@ -123,19 +130,23 @@ impl Bottle {
 
 impl GameState {
     pub fn new(g: &Game) -> Self {
-       let mut v = Vec::new();
-       for x in &g.bottles{
-           let x_as_prim = x.as_prim();
-           v.push(x_as_prim);
-       }
-       v.sort();
-       Self { botts: v }
+        let mut v = Vec::new();
+        for x in &g.bottles {
+            let x_as_prim = x.as_prim();
+            v.push(x_as_prim);
+        }
+        v.sort();
+        Self { botts: v }
     }
 }
 
 impl Move {
     pub fn str(&self) -> String {
-        format!("Move from bottle {} to bottle {}", self.start + 1, self.end + 1)
+        format!(
+            "Move from bottle {} to bottle {}",
+            self.start + 1,
+            self.end + 1
+        )
     }
 }
 

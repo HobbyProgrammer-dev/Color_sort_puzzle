@@ -1,19 +1,19 @@
-use std::{collections::{HashSet, VecDeque}, rc::Rc};
+use std::{collections::HashSet, rc::Rc};
 
 use game::{GameRules, Path};
 
 
-pub fn bfs<G: GameRules + Clone>(g: &mut G, print: bool) -> Option<Path> {
-    let mut queue = VecDeque::new();
+pub fn dfs(g: &mut game::Game, print: bool) -> Option<Path> {
+    let mut queue = Vec::new();
     let mut visited_states = HashSet::new();
     visited_states.insert(g.get_gamestate());
-    queue.push_back((g.clone(), Rc::new(Path::new())));
+    queue.push((g.clone(), Rc::new(Path::new())));
 
     let mut depth = 0;
     let mut states = 0;
     let mut prev_states = 0;
     
-    while let Some((g, pth)) = queue.pop_front() {
+    while let Some((g, pth)) = queue.pop() {
         states += 1;
         let curr_depth = pth.get_depth();
 
@@ -39,7 +39,7 @@ pub fn bfs<G: GameRules + Clone>(g: &mut G, print: bool) -> Option<Path> {
                 return Some(new_path);
             }
             visited_states.insert(new_state);
-            queue.push_back((g_cpy, Rc::new(new_path)));
+            queue.push((g_cpy, Rc::new(new_path)));
         }
     }
     None

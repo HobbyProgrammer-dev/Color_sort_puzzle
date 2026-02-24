@@ -1,6 +1,6 @@
 
-pub fn read() -> Vec<Vec<u8>> {
-    let mut cr = csv::Reader::from_path("data/games.csv").expect("no file in data folder");
+pub fn read(path: &str) -> Vec<Vec<u8>> {
+    let mut cr = csv::Reader::from_path(path).expect("no file in data folder");
     let mut v: Vec<Vec<u8>> = Vec::new();
     for rec in cr.deserialize() {
         v.push(rec.expect("variable parse error"));

@@ -1,0 +1,12 @@
+[package]
+name = "main"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+creator = { version = "0.1.0", path = "../creator" }
+csv = "1.4.0"
+game = { version = "0.1.0", path = "../game" }
+rand = "0.10.0"
+rand_chacha = "0.10.0"
+sorter = { version = "0.1.0", path = "../sorter" }

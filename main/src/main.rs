@@ -19,13 +19,16 @@
 // }
 
 fn main() {
+    let no_bottles = 40;
+    let height = 4;
+    let color_size = 6;
     // let mut rng = rand_chacha::ChaCha8Rng::seed_from_u64(seed);
     let mut rng = rand::rng();
     let mut wrtr = csv::Writer::from_path("./data/games.csv").expect("No games.csv");
-    for _x in 0..50{
-        let _g = creator::generate(40, 4, &mut rng, &mut wrtr);
+    for _x in 0..100{
+        let _g: game::GameMemEff<u32> = creator::generate(no_bottles, height, color_size, &mut rng, &mut wrtr);
         println!("{_x}");
+        wrtr.flush().expect("Error flushing value");
     }
-    wrtr.flush().expect("Error flushing value");
     // dbg!(g);
 }

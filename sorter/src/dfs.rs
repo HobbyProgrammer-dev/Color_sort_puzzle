@@ -1,9 +1,9 @@
 use std::{collections::HashSet, rc::Rc};
 
-use game::{GameRules, Path};
+use game::{GameRules, Path, UnsignedInt};
 
 
-pub fn dfs(g: &mut game::Game, print: bool) -> Option<Path> {
+pub fn dfs<T: UnsignedInt, G: GameRules<T> + Clone>(g: &mut G, print: bool) -> Option<Path> {
     let mut queue = Vec::new();
     let mut visited_states = HashSet::new();
     visited_states.insert(g.get_gamestate());

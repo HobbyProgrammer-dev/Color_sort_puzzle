@@ -3,18 +3,20 @@ use std::fs::File;
 use std::iter;
 
 use csv::Writer;
-use game::Game;
+use game::GameMemEff;
 use game::GameRules;
+use game::UnsignedInt;
 use rand::Rng;
 use rand::RngExt;
 use serde::Serialize;
 
-pub fn generate<Random: Rng>(
+pub fn generate<Random: Rng, T: UnsignedInt>(
     no_bottles: usize,
-    height: u16,
+    height: u8,
+    color_size: u8,
     rng: &mut Random,
     wrtr: &mut Writer<File>,
-) -> Game {
+) -> GameMemEff<T> {
     let mut v = Vec::new();
     for _i in 0..no_bottles {
         v.push(Vec::new());
@@ -41,7 +43,7 @@ pub fn generate<Random: Rng>(
     let mut no_empty = 1;
     let mut path_length = 0;
     while ! is_solvable {
-        let mut g = Game::new(height, &v);
+        let mut g = GameMemEff::<T>::new(height, &v, color_size);
         let path = sorter::dfs::dfs(&mut g, false);
         if path.is_some() {
             is_solvable = true;
@@ -53,7 +55,7 @@ pub fn generate<Random: Rng>(
         }
     }
 
-    let game_solvable = Game::new(height, &v);
+    let game_solvable = GameMemEff::new(height, &v, color_size);
     let val = LogCsv{ no_of_filled_bottles: no_bottles, no_of_bottles_added: no_empty, path_length };
     wrtr.serialize(val).expect("Error writing value");
 

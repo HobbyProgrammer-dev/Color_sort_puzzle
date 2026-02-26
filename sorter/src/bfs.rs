@@ -1,9 +1,9 @@
 use std::{collections::{HashSet, VecDeque}, rc::Rc};
 
-use game::{GameRules, Path};
+use game::{GameRules, Path, UnsignedInt};
 
 
-pub fn bfs<G: GameRules + Clone>(g: &mut G, print: bool) -> Option<Path> {
+pub fn bfs<T: UnsignedInt, G: GameRules<T> + Clone>(g: &mut G, print: bool) -> Option<Path> {
     let mut queue = VecDeque::new();
     let mut visited_states = HashSet::new();
     visited_states.insert(g.get_gamestate());

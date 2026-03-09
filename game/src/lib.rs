@@ -15,7 +15,7 @@ pub struct GameState<T: UnsignedInt> {
 }
 
 pub trait GameRules<T: UnsignedInt> {
-    fn new(height: u8, b: &Vec<Vec<u8>>, color_size: u8) -> Self ;
+    fn new(height: u8, b: &[Vec<u8>], color_size: u8) -> Self ;
     fn is_move_valid(&self, mv: &Move) -> bool ;
     fn make_move(&mut self, mv: &Move) -> Result<(), InvalidMoveError> ;
     fn get_all_valid_moves(&self) -> Vec<Move> ;
@@ -42,7 +42,7 @@ pub struct GameMemEff<T: UnsignedInt> {
 }
 
 impl<T: UnsignedInt> GameRules<T> for GameMemEff<T> {
-    fn new(height: u8, b: &Vec<Vec<u8>>, color_size: u8) -> Self {
+    fn new(height: u8, b: &[Vec<u8>], color_size: u8) -> Self {
         let mut v = Vec::new();
         for x in b {
             v.push(BottleMemEff::new(height, x, color_size));
@@ -131,7 +131,7 @@ impl<T> BottleMemEff<T> where T: UnsignedInt {
         let mut a = self.bott;
         let mut c = 0;
         while a > (T::from(0)) {
-            c = c + 1;
+            c += 1;
             a = a.rshift(self.color_size);
         }
         c
@@ -151,12 +151,11 @@ impl<T> BottleMemEff<T> where T: UnsignedInt {
     }
 
     fn get_mask(&self) -> u8 {
-        let mask = if self.color_size == 8 {
-            u8::max_value()
+        if self.color_size == 8 {
+            u8::MAX
         } else {
             (1 << self.color_size) - 1
-        };
-        mask
+        }
     }
     fn push(&mut self, val: u8) {
         let shift = self.len() * self.color_size;
@@ -261,7 +260,7 @@ impl Path {
                 v.push(mv);
             }
             match &current.previous {
-                Some(prev) => current = Rc::clone(&prev),
+                Some(prev) => current = Rc::clone(prev),
                 None => break
             }
         }
@@ -274,3 +273,8 @@ impl Path {
     }
 }
 
+impl Default for Path {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -21,7 +21,7 @@ pub fn generate<Random: Rng, T: UnsignedInt>(
     for _i in 0..no_bottles {
         v.push(Vec::new());
     }
-    let mut available: Vec<_> = iter::repeat(height).take(no_bottles).collect();
+    let mut available: Vec<_> = iter::repeat_n(height, no_bottles).collect();
     for _i in 0..(no_bottles*height as usize) {
         let mut marble_placed = false;
         while ! marble_placed {
@@ -45,9 +45,8 @@ pub fn generate<Random: Rng, T: UnsignedInt>(
     while ! is_solvable {
         let mut g = GameMemEff::<T>::new(height, &v, color_size);
         let path = sorter::dfs::dfs(&mut g, false);
-        if path.is_some() {
+        if let Some(path_unwrapped) = path {
             is_solvable = true;
-            let path_unwrapped = path.unwrap();
             path_length = path_unwrapped.get_depth();
         } else {
             v.push(Vec::new());
